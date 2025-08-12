@@ -111,7 +111,7 @@ button:focus-visible {
   grid-column: 3;
   grid-row: 2;
 }
-.controls .left {
+.controls .down {
   grid-column: 2;
   grid-row: 3;
 }
