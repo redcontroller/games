@@ -82,7 +82,36 @@ button:focus-visible {
 .snake {
   background-color: limegreen;
 }
-/* 
-.apple {
-  background-color: crimson;
-} */
+
+.controls {
+  width: 200px;
+  margin: 8px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 48px);
+  gap: 8px;
+  touch-action: manipulation;
+}
+
+.controls .ctrl {
+  font-size: 18px;
+  height: 48px;
+  user-select: none;
+}
+
+.controls .up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.controls .left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.controls .right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.controls .left {
+  grid-column: 2;
+  grid-row: 3;
+}

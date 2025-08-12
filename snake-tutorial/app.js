@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.querySelector('.start');
   const stopBtn = document.querySelector('.stop');
   const gameOverOverlay = document.querySelector('#game-over');
+  const upBtn = document.querySelector('.controls .up');
+  const downBtn = document.querySelector('.controls .down');
+  const leftBtn = document.querySelector('.controls .left');
+  const rightBtn = document.querySelector('.controls .right');
 
   const width = Number(gridEl.dataset.size) || 10;
 
@@ -130,4 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', control);
   startBtn.addEventListener('click', startGame);
   stopBtn.addEventListener('click', stopGame);
+
+  // 모바일/터치 제어용 (pointerdown으로 마우스/터치/펜 통합)
+  upBtn.addEventListener('pointerdown', () => (direction = -width));
+  downBtn.addEventListener('pointerdown', () => (direction = +width));
+  leftBtn.addEventListener('pointerdown', () => (direction = -1));
+  rightBtn.addEventListener('pointerdown', () => (direction = 1));
 });
