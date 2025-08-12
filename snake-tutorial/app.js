@@ -1,10 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const squares = document.querySelectorAll('.grid div');
+  const gridEl = document.querySelector('.grid');
   const scoreDisplay = document.querySelector('span');
   const startBtn = document.querySelector('.start');
+  const stopBtn = document.querySelector('.stop');
+  const gameOverOverlay = document.querySelector('#game-over');
 
-  const width = 10;
-  let currentIndex = 0;
+  const width = Number(gridEl.dataset.size) || 10;
+
+  // 동적 그리드 생성 (오버레이 앞에 삽입)
+  {
+    const total = width * width;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < total; i++)
+      frag.appendChild(document.createElement('div'));
+    gridEl.insertBefore(frag, gameOverOverlay);
+  }
+
+  const squares = gridEl.querySelectorAll('div:not(.overlay)');
+
+  // let currentIndex = 0;
   let appleIndex = 0;
   let currentSnake = [2, 1, 0]; // The div in our grid being 2 (or the HEAD), and 0 being the end (TAIL, with all 1's being the body fro new on)
   let direction = 1;
@@ -12,21 +26,44 @@ document.addEventListener('DOMContentLoaded', () => {
   let speed = 0.9;
   let intervalTime = 0;
   let interval = 0;
+  let isPaused = false;
+  let isGameOver = false;
 
   // to start, and restart the game
   function startGame() {
+    isPaused = false;
+    isGameOver = false;
+    stopBtn.textContent = 'Stop';
+    gameOverOverlay.classList.remove('show');
+
     currentSnake.forEach((index) => squares[index].classList.remove('snake'));
+    squares[appleIndex].textContent = '';
     squares[appleIndex].classList.remove('apple');
     clearInterval(interval);
     score = 0;
     randomApple();
     direction = 1;
     scoreDisplay.innerText = score;
-    intervalTime = 1000;
+    intervalTime = 600; // 1000;
     currentSnake = [2, 1, 0];
     currentIndex = 0;
     currentSnake.forEach((index) => squares[index].classList.add('snake'));
     interval = setInterval(moveOutcomes, intervalTime);
+  }
+
+  function stopGame() {
+    if (isGameOver) return;
+
+    if (!isPaused) {
+      clearInterval(interval);
+      interval = 0;
+      isPaused = true;
+      stopBtn.textContent = 'Resume';
+    } else {
+      interval = setInterval(moveOutcomes, intervalTime);
+      isPaused = false;
+      stopBtn.textContent = 'Stop';
+    }
   }
 
   // function that deals width ALL the ove outcomes of the Snake
@@ -39,7 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
       (currentSnake[0] - width < 0 && direction === -width) || // if snake hits the top
       squares[currentSnake[0] + direction].classList.contains('snake') // if snake go into itself
     ) {
-      return clearInterval(interval); // this will clear the interval if any of the above happen
+      clearInterval(interval); // this will clear the interval if any of the above happen
+      interval = 0;
+      isGameOver = true;
+      stopBtn.textContent = 'Stop';
+      gameOverOverlay.classList.add('show');
+      return;
     }
 
     const tail = currentSnake.pop(); // removes last item of the array and shows it
@@ -48,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // deals with snake getting apple
     if (squares[currentSnake[0]].classList.contains('apple')) {
+      squares[currentSnake[0]].textContent = '';
       squares[currentSnake[0]].classList.remove('apple');
       squares[tail].classList.add('snake');
       currentSnake.push(tail);
@@ -65,14 +108,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function randomApple() {
     do {
       appleIndex = Math.floor(Math.random() * squares.length);
+      appleEl = squares[appleIndex];
     } while (squares[appleIndex].classList.contains('snake')); // making sure apple
     squares[appleIndex].classList.add('apple');
+    squares[appleIndex].textContent = '🍎';
   }
 
   // assign functions to keycodes
   function control(e) {
-    squares[currentIndex].classList.remove('snake'); // We are removing the class of snake
-
     if (e.keyCode === 39) {
       direction = 1; // if we press the right arrow on our keyboard, the snake will go right one
     } else if (e.keyCode === 38) {
@@ -86,4 +129,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keyup', control);
   startBtn.addEventListener('click', startGame);
+  stopBtn.addEventListener('click', stopGame);
 });
