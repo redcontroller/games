@@ -1,5 +1,11 @@
 body {
   display: flex;
+  margin: 0;
+}
+
+div {
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .game-container {
@@ -84,6 +90,15 @@ body {
   }
 }
 
+@-webkit-keyframes slideright {
+  from {
+    background-position: 10000%;
+  }
+  to {
+    background-position: 0%;
+  }
+}
+
 .ground-container {
   height: 150px;
   width: 580px;
@@ -92,8 +107,8 @@ body {
 }
 
 .ground-moving {
-  position: absolute;
   width: 100%;
+  position: absolute;
   top: 580px;
   height: 150px;
   background-image: url('bottom-background.png');

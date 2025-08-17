@@ -4,13 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const ground = document.querySelector('.ground-moving');
 
   let birdLeft = 220;
-  let birdBottom = 100;
+  let birdBottom = 200;
   let gravity = 3;
   let isGameOver = false;
-  let gap = 430;
+  let gap = 450;
 
   function startGame() {
-    birdBottom -= gravity;
+    if (birdBottom > -149) birdBottom -= gravity;
     bird.style.bottom = birdBottom + 'px';
     bird.style.left = birdLeft + 'px';
   }
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function jump() {
-    if (birdBottom < 500) birdBottom += 50;
+    if (birdBottom < 500) birdBottom += 45;
     bird.style.bottom = birdBottom + 'px';
     console.log(birdBottom);
   }
@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
     obstacle.style.left = obstacleLeft + 'px';
     topObstacle.style.left = obstacleLeft + 'px';
     obstacle.style.bottom = obstacleBottom + 'px';
+    const sign = Math.random() > 0.6 ? 1 : -1;
+    gap += sign * Math.random() * 50;
+    if (420 > gap || 600 < gap) gap = 450;
     topObstacle.style.bottom = obstacleBottom + gap + 'px';
 
     function moveObstacle() {
@@ -56,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameDisplay.removeChild(obstacle);
         gameDisplay.removeChild(topObstacle);
       }
-      if ((obstacleLeft > 200 && obstacleLeft < 280 && birdLeft === 220 && (birdBottom < obstacleBottom + 153 || birdBottom > obstacleBottom + gap - 200)) || birdBottom === 0) {
+      if ((200 < obstacleLeft && obstacleLeft < 280 && birdLeft === 220 && (obstacleBottom + gap - 190 < birdBottom || birdBottom < obstacleBottom + 150)) || birdBottom < 0) {
         gameOver();
         clearInterval(timerId);
       }
